@@ -1,0 +1,154 @@
+create view db_rental as
+select r.rental_id, r.rental_date, r.return_date,p.payment_id, p.amount, p.payment_date, c.customer_id, f.title, f.rating, f.rental_duration, f.length, ca.name as category
+from customer c
+join rental r on c.customer_id = r.customer_id
+join payment p on r.rental_id = p.rental_id
+join inventory i on r.inventory_id = i.inventory_id
+join film f on i.film_id = f.film_id
+join film_category fc on f.film_id = fc.film_id
+join category ca on fc.category_id = ca.category_id
+
+drop view db_rental 
+-- no 1a judul film mini project
+select title, extract (day from payment_date) as date,
+		to_char(payment_date, 'Month') as month,
+		extract (year from payment_date) as year,
+		sum (amount) as amount
+from db_rental
+group by title,extract (day from payment_date),
+		to_char(payment_date, 'Month'),
+		extract (year from payment_date)
+order by extract (day from payment_date) asc,
+		to_char(payment_date, 'Month') asc,
+		extract (year from payment_date) asc
+
+select title, to_char(payment_date, 'Month') as month,
+		extract (year from payment_date) as year,
+		sum(amount) as amount
+from db_rental
+group by title, to_char(payment_date, 'Month'),
+				extract (year from payment_date)
+order by to_char(payment_date, 'Month') asc ,
+		extract (year from payment_date) asc
+		
+select title, extract (year from payment_date) as year,
+		sum(amount) as amount
+from db_rental
+group by title, extract (year from payment_date)
+order by extract (year from payment_date) asc
+
+-- 1b rating film mini project
+select rating, extract (day from payment_date) as date,
+		to_char(payment_date, 'Month') as month,
+		extract (year from payment_date) as year,
+		sum (amount) as amount
+from db_rental
+group by rating,extract (day from payment_date),
+		to_char(payment_date, 'Month'),
+		extract (year from payment_date)
+order by extract (day from payment_date) asc,
+		to_char(payment_date, 'Month') asc,
+		extract (year from payment_date) asc
+
+select rating, to_char(payment_date, 'Month') as month,
+		extract (year from payment_date) as year,
+		sum(amount) as amount
+from db_rental
+group by rating, to_char(payment_date, 'Month'),
+				extract (year from payment_date)
+order by to_char(payment_date, 'Month') asc ,
+		extract (year from payment_date) asc
+		
+select rating, extract (year from payment_date) as year,
+		sum(amount) as amount
+from db_rental
+group by rating, extract (year from payment_date)
+order by extract (year from payment_date) asc
+		
+--1c category film mini project
+select category, extract (day from payment_date) as date,
+		to_char(payment_date, 'Month') as month,
+		extract (year from payment_date) as year,
+		sum (amount) as amount
+from db_rental
+group by category,extract (day from payment_date),
+		to_char(payment_date, 'Month'),
+		extract (year from payment_date)
+order by extract (day from payment_date) asc,
+		to_char(payment_date, 'Month') asc,
+		extract (year from payment_date) asc
+
+select category, to_char(payment_date, 'Month') as month,
+		extract (year from payment_date) as year,
+		sum(amount) as amount
+from db_rental
+group by category, to_char(payment_date, 'Month'),
+				extract (year from payment_date)
+order by to_char(payment_date, 'Month') asc ,
+		extract (year from payment_date) asc
+		
+select category, extract (year from payment_date) as year,
+		sum(amount) as amount
+from db_rental
+group by category, extract (year from payment_date)
+order by extract (year from payment_date) asc
+
+--2a frekuensi peminjaman
+select customer_id, to_char(payment_date, 'Month') as month,
+		extract (year from payment_date) as year,
+		count(rental_id) as total_peminjaman
+from db_rental
+group by 1, 2, 3
+order by 1 asc
+
+select  extract (day from payment_date) as date,
+		to_char(payment_date, 'Month') as month,
+		extract (year from payment_date) as year,
+		count(rental_id) as total_peminjaman
+from db_rental
+group by 1, 2, 3
+order by 1, 2, 3
+
+select  to_char(payment_date, 'Month') as month,
+		extract (year from payment_date) as year,
+		count(rental_id) as total_peminjaman
+from db_rental
+group by 1, 2
+order by 1, 2
+
+select  
+		extract (year from payment_date) as year,
+		count(rental_id) as total_peminjaman
+from db_rental
+group by extract (year from payment_date)
+
+
+select category , extract (day from payment_date) as date,
+				to_char(payment_date, 'Month') as month,
+				extract (year from payment_date) as year,
+				rating, 
+				count(*) as penyewaan
+from db_rental
+group by 1,2,3, 4,5
+order by 1
+limit 10
+
+select category , to_char(payment_date, 'Month') as month,
+				extract (year from payment_date) as year,
+				rating, 
+				count(*) as penyewaan
+from db_rental
+group by 1,2,3,4
+order by 3
+limit 10
+
+select category , extract (year from payment_date) as year,
+				rating, 
+				count(*) as penyewaan
+from db_rental
+group by 1,2,3
+order by 3
+limit 10
+
+
+
